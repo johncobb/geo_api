@@ -1,0 +1,6 @@
+version: '2'
+services: 
+    geo-engine:
+    ports:
+      - "4200:4200"
+    image: cpht/geo-engine:dev

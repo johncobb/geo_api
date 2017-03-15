@@ -1,0 +1,13 @@
+{
+  "data": {
+    "organizationId": 1,
+    "first_name": "Gilberto",
+    "last_name": "Encarnacion",
+    "email": "gilbert@cphandheld.com",
+    "phone": "8125551000",
+    "extension": "1337",
+    "time_zone": -6,
+    "pin": "008008",
+    "auth_user_id": "auth0|589e263c8c84673f83bc7fd6"
+  }
+}

@@ -1,0 +1,11 @@
+server {
+    listen 4001;
+    server_name montana.cphandheld.com;
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/home/johnc/geo-engine/geo-engine.sock;
+    }
+}
+
+

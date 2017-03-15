@@ -1,0 +1,13 @@
+{
+  "data": {
+    "organizationId": 1,
+    "first_name": "Fred",
+    "last_name": "Flintstone",
+    "email": "fred@bedrock.com",
+    "phone": "8128539062",
+    "extension": "1337",
+    "time_zone": -6,
+    "pin": "007007",
+    "auth_user_id": "auth0|583317175870621357145b72"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "AppId": 1,
+  "ScannerSerial": 12345678,
+  "Stats": {
+    "QueueDepth": 0
+  },
+  "Key": "2GCEC13V471153201",
+  "GroupId": 5,
+  "OrganizationId": 1,
+  "UserId": 1,
+  "ScannedDate": "2017-01-03T21:35:00.000Z",
+  "GeoLocation": {
+    "Latitude": 97.818372,
+    "Longitude": -96.912222
+  },
+  "PrinterIds": [
+    3,
+    6
+  ],
+  "Data": {
+    "Inventory": {
+      "RecordId": 69,
+      "Stock": "71153201",
+      "Color": "Gun Metallic",
+      "Mileage": 28599,
+      "Price": 18500,
+      "Cost": 14000,
+      "DealershipId": 5,
+      "LocationId": 6,
+      "Classification": "U"
+    },
+    "Vehicle": {
+      "RecordId": 11,
+      "VIN": "2GCEC13V471153201",
+      "Year": 2014,
+      "Make": "Nissan",
+      "Model": "Juke"
+    },
+    "Note": {
+      "NoteText": "These are my notes"
+    }
+  }
+}

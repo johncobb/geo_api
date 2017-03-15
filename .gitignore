@@ -1,0 +1,11 @@
+*.pyc
+*.pyo
+*.swp
+env
+startup-freelancer
+static
+activate
+publish-ci/
+unison-ci/
+build/
+

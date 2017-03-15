@@ -1,0 +1,112 @@
+cd ~/project_name
+
+# Login for Rackspace MySQL
+
+# mysql -h 652b5aa36db04193b089433872471075.publb.rackspaceclouddb.com -u dev_scanner_user -p (High Availability)
+
+# apache2 option
+sudo apt-get install apache2
+sudo apt-get install libapache2-mod-wsgi
+sudo a2enmod wsgi
+sudo service apache2 restart
+
+
+https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-gunicorn-and-nginx-on-ubuntu-14-04
+
+# run unicorn
+sudo apt-get install nginx
+sudo apt-get install gunicorn
+# Create wsgi entry
+wsgi.py
+# Test gunicorn
+gunicorn --bind 0.0.0.0:5000 wsgi
+
+# Create upstart script
+sudo nano /etc/init/project.conf
+
+# Start the process
+sudo start project
+
+# Configure Nginx proxy
+sudo nano /etc/nginx/sites-available/project
+
+# Create symbolic link
+sudo ln -s /etc/nginx/sites-available/project /etc/nginx/sites-enable
+
+#Check syntax
+sudo nginx -t
+
+# Restart nginx
+sudo service nginx restart
+# nginx logs
+/var/log/syslog
+
+
+
+# create virtual environment
+virtualenv env
+
+# Install python-dev and libsqlclient-dev
+sudo apt-get insttall python-dev libmysqlclient-dev
+
+# Now install required modules
+env/bin/pip install gunicorn
+env/bin/pip install flask
+env/bin/pip install flask-sqlalchemy
+env/bin/pip install flask-wtf
+env/bin/pip install MySQL-python
+env/bin/pip intall flask-security
+env/bin/pip install flask-stormpath
+env/bin/pip install Flask-API
+env/bin/pip install pymysql
+env/bin/pip install flask_api
+# Activate and deactivate virtualenv
+ubuntu@ip-192-168-1-5:~/apps/flask_app$ . env/bin/activate
+(env) ubuntu@ip-172-31-61-6:~/apps/flask_app$ deactivate
+
+
+
+# We're going to decorate our website using Bootstrap
+# Download from git: git clone https://github.com/BlackrockDigital/startbootstrap-freelancer.git
+# copy the contents to the static folder cp -R 
+# Copy the index.html file to the templates folder
+
+# Amazon AWS in particular neds the host parameter
+# to listen on all ports. I was unable to connecti
+# without it.
+app.run('host=0.0.0.0')
+
+# Build Docker Image
+docker build -t cpht/printer-api:dev .
+# Run Docker Image
+docker run -it -p 4001:4001 cpht/printer-api:dev
+# Launch the image
+docker exec -it cphprinterapi_1 nosetests
+# Launch in interactive bash mode
+docker exec -it cphprinterapi_1 bash
+
+
+#https://devcereal.com/setting-flask-angularjs/
+# https://flask-migrate.readthedocs.io/en/latest/
+Flask-Migrate
+python migrate.py db migrate
+
+API Rotes
+/app
+/app/1
+/organization
+/organization/1
+/organization/1/groups/
+/group/1
+/group/1/printers
+/scanner/1
+/scanner/1/queue
+/scanner/1/queue/top
+/scanner/1/queue/pop
+/scanner/1/queue/all
+/queue/1
+/queue/push
+/queue/key/<string:key>
+/user/auth/<user> POST
+/user/ident <oauth:auth_user_id> GET
+/user/pin <user> PUT

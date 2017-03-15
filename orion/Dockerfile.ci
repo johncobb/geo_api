@@ -1,0 +1,17 @@
+FROM 	python:2.7-slim
+
+VOLUME	["/src"]
+
+ADD	prepare.sh	/test/prepare.sh
+RUN	chmod +x /test/prepare.sh
+
+ADD	build.sh	/test/build.sh
+RUN	chmod +x /test/build.sh
+
+ADD	finish.sh	/test/finish.sh
+RUN	chmod +x /test/finish.sh
+
+WORKDIR	/test
+
+ENTRYPOINT ["bash"]
+

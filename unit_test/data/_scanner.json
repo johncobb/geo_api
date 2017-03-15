@@ -1,0 +1,10 @@
+{
+  "data": {
+    "groupId": "1",
+    "alias": "Scanner 1 (Edited)",
+    "ip": "192.168.1.200",
+    "model": "Zebra TC75",
+    "serial": "1F2A3218",
+    "fw": "1.0"
+  }
+}
