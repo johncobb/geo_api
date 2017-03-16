@@ -8,7 +8,7 @@ from flask import Flask, _app_ctx_stack
 from flask_cors import cross_origin
 from flask import jsonify
 from flask_sqlalchemy import SQLAlchemy
-from flask import request, redirect, url_for, render_template
+from flask import request, redirect, url_for, render_template, send_file
 from werkzeug.security import safe_str_cmp
 from flask_cors import CORS, cross_origin
 
@@ -71,9 +71,9 @@ def handle_api_exception(error):
     response.status_code = error.status_code
     return response
 
-@app.route('/home')
+@app.route('/')
 def index():
-    return render_template('index.html')
+    return send_file('templates/index.html')
 
 @app.route('/foo')
 def get_foo():
