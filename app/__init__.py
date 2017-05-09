@@ -167,6 +167,11 @@ def securedPing():
 # Define database object
 db = SQLAlchemy(app)
 
+
+#from app.mod_geo.models.landmark import Landmark as Landmark
+#Landmark.__table__.create(db.engine)
+
+
 from app.mod_organization.controllers.application import bp_app as bp_app_module
 from app.mod_organization.controllers.applet import bp_applet as bp_applet_module
 from app.mod_organization.controllers.organization import bp_organization as bp_organization_module
@@ -175,7 +180,9 @@ from app.mod_organization.controllers.group import bp_group as bp_group_module
 
 from app.mod_geo.controllers.landmark import bp_landmark as bp_geo_landmark
 from app.mod_geo.controllers.geofence import bp_geofence as bp_geo_fence
+from app.mod_geo.controllers.georef import bp_georef as bp_geo_georef
 
+app.register_blueprint(bp_geo_georef)
 app.register_blueprint(bp_app_module)
 app.register_blueprint(bp_applet_module)
 app.register_blueprint(bp_organization_module)

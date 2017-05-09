@@ -23,8 +23,11 @@ print "ROUTE_PREFIX = ", ROUTE_PREFIX
 
 #SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
 
-SQLALCHEMY_DATABASE_URI = os.getenv('DB_URI', 'sqlite:///:memory:')
-DB_ENV = os.getenv('DB_ENV', 'memory')
+#SQLALCHEMY_DATABASE_URI = os.getenv('DB_URI', 'sqlite:///:memory:')
+#DB_ENV = os.getenv('DB_ENV', 'memory')
+SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:Password1@localhost/postgres'
+DB_ENV = 'postgres'
+
 print "DB_ENV = ", DB_ENV
 print "SQLALCHEMY_DATABASE_URI = ", SQLALCHEMY_DATABASE_URI
 if DB_ENV == 'mysql' :
@@ -33,12 +36,14 @@ if DB_ENV == 'mysql' :
     SQLALCHEMY_POOL_SIZE = 4
     #SQLALCHEMY_POOL_TIMEOUT = 10
     SQLALCHEMY_POOL_RECYCLE = 3600 
+elif DB_ENV == 'postgres':
+    SQLALCHEMY_ECHO = False # Log all output to stderr
+    DB_ENV="memory"
+    SQLALCHEMY_POOL_SIZE = 4
+    #SQLALCHEMY_POOL_TIMEOUT = 10
+    SQLALCHEMY_POOL_RECYCLE = 3600 
 
 
-REDIS_QUEUE_URL = os.environ['REDIS_QUEUE_URL']
-REDIS_QUEUE_PORT = os.environ['REDIS_QUEUE_PORT']
-
-#REDIS_QUEUE = redis.Redis(host=REDIS_QUEUE_URL, port=REDIS_QUEUE_PORT)
 
 DATABASE_CONNECTION_OPTIONS = {}
 # Application threads. A common general assumption is

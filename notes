@@ -65,6 +65,11 @@ ubuntu@ip-192-168-1-5:~/apps/flask_app$ . env/bin/activate
 (env) ubuntu@ip-172-31-61-6:~/apps/flask_app$ deactivate
 
 
+#https://github.com/appropriate/docker-postgis
+
+# Postgres
+psql -h localhost -U username
+
 
 # We're going to decorate our website using Bootstrap
 # Download from git: git clone https://github.com/BlackrockDigital/startbootstrap-freelancer.git
@@ -77,13 +82,13 @@ ubuntu@ip-192-168-1-5:~/apps/flask_app$ . env/bin/activate
 app.run('host=0.0.0.0')
 
 # Build Docker Image
-docker build -t cpht/printer-api:dev .
+docker build -t cpht/geodesity-api:dev .
 # Run Docker Image
-docker run -it -p 4001:4001 cpht/printer-api:dev
+docker run -it -p 4001:4001 cpht/geodesity-api:dev
 # Launch the image
-docker exec -it cphprinterapi_1 nosetests
+docker exec -it geodesityapi nosetests
 # Launch in interactive bash mode
-docker exec -it cphprinterapi_1 bash
+docker exec -it geodesityapi bash
 
 
 #https://devcereal.com/setting-flask-angularjs/
@@ -99,14 +104,3 @@ API Rotes
 /organization/1/groups/
 /group/1
 /group/1/printers
-/scanner/1
-/scanner/1/queue
-/scanner/1/queue/top
-/scanner/1/queue/pop
-/scanner/1/queue/all
-/queue/1
-/queue/push
-/queue/key/<string:key>
-/user/auth/<user> POST
-/user/ident <oauth:auth_user_id> GET
-/user/pin <user> PUT

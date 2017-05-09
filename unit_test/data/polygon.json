@@ -1,15 +1,12 @@
 {
-  "data": {
-		"alias": "Showroom",
-		"type": "Polygon",
-		"coordinates": [
-			[37.000000, -87.000000],
-			[37.000000, -87.000000],
-			[37.000000, -87.000000],
-			[37.000000, -87.000000]
-		]
-	}
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [37.972806, -87.404455]
+  },
+  "properties": {
+    "name": "Newburgh"
+    "groupId": "1"
+    "path": "/user/home/johnc"
+  }
 }
-
-
-

@@ -9,6 +9,7 @@ from app import JSON_API_Message as API_MSG
 from app import Payload as Payload
 
 from app.mod_geo.models.landmark import Landmark
+from app.mod_geo.models.geometry import Geometry
 from app import ApiExceptionHandler as ApiException
 from sqlalchemy import exc
 
@@ -90,13 +91,23 @@ def add_landmark():
 
     # Validate the incoming JSON
     if request.json:
-        data = json.dumps(request.json)
-        p = Payload(data)
+        data = request.get_json()
+
+        x = data['geometry']['coordinates'][0]
+        y = data['geometry']['coordinates'][1]
+        #sql_polygon = 'POLYGON ((%s %s))'
+        sql_polygon = 'POINT (%s %s)'
+        sql_polygon = sql_poljjon % (x, y)
+
+        print sql_polygon
+        groupId = data['properties']['groupId']
+        path = data['properties']['path']
+
     else:
         return jsonify(API_MSG.JSON_400_BAD_REQUEST), status.HTTP_400_BAD_REQUEST
 
     # Create the object
-    landmark = Landmark(p.groupId, p.alias, p.ip, p.model, p.serial, p.fw)
+    landmark = Landmark(groupId, path, sql_polygon)
 
     try:
         db.session.add(landmark)
@@ -105,7 +116,8 @@ def add_landmark():
         db.session.rollback()
         raise ApiException(e.message, status_code=status.HTTP_400_BAD_REQUEST)
 
-    return jsonify({"data":landmark.to_json()})
+    #return jsonify({"data":landmark.to_json()})
+    return jsonify(data)
 
 @bp_landmark.route('/<int:landmarkId>', methods=['PUT'])
 def update_landmark(landmarkId):
