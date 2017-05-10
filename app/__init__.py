@@ -180,9 +180,9 @@ from app.mod_organization.controllers.group import bp_group as bp_group_module
 
 from app.mod_geo.controllers.landmark import bp_landmark as bp_geo_landmark
 from app.mod_geo.controllers.geofence import bp_geofence as bp_geo_fence
-from app.mod_geo.controllers.georef import bp_georef as bp_geo_georef
+from app.mod_geo.controllers.geom import bp_geom as bp_geo_geom
 
-app.register_blueprint(bp_geo_georef)
+app.register_blueprint(bp_geo_geom)
 app.register_blueprint(bp_app_module)
 app.register_blueprint(bp_applet_module)
 app.register_blueprint(bp_organization_module)

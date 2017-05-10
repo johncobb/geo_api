@@ -1,11 +1,8 @@
 from app.mod_geo.models import base
 from app import db
-
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String
-
 from geoalchemy2 import Geometry
-
 
 Base = declarative_base()
 
@@ -18,7 +15,7 @@ sql_multipolygon = 'MULTIPOLYGON (%s %s)'
 sql_geometrycollection = 'GEOMETRYCOLLECTION (%s %s)'
 
 # Define the  model
-class GeoRef(base.Base):
+class Geom(base.Base):
     __tablename__ = 'georeferences'
 
     data = []
@@ -47,7 +44,7 @@ class GeoRef(base.Base):
         self.archive = False
 
     def __repr__(self):
-        return '<GeoRef%r>' % (self.name)
+        return '<Geom%r>' % (self.name)
 
     def build_sql(self, data):
 

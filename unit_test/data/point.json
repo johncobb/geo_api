@@ -1,10 +1,8 @@
 {
   "type": "Feature",
   "geometry": {
-    "type": "Polygon",
-    "coordinates": [
-    [ [41.83, 71.01], [56.95, 33.75], [21.79, 36.56], [41.83, 71.01] ]
-  ]
+    "type": "Point",
+    "coordinates": [37.972806, -87.404455]
   },
   "properties": {
     "name": "Newburgh",
