@@ -8,9 +8,15 @@ from app import db
 from app import JSON_API_Message as API_MSG
 from app import Payload as Payload
 
+
+from geoalchemy2 import Geometry
+from geoalchemy2.functions import GenericFunction
+
 from app.mod_geo.models.geom import Geom
 from app import ApiExceptionHandler as ApiException
 from sqlalchemy import exc
+from sqlalchemy import func
+
 
 bp_geom = Blueprint('geom', __name__, url_prefix='/geom')
 
@@ -27,6 +33,40 @@ sql_geometrycollection = 'GEOMETRYCOLLECTION (%s %s)'
 # POST a new record
 # PATCH partially update record
 # DELETE delete a record
+
+@bp_geom.route('/nearby', methods=['GET'])
+def nearby():
+
+    """
+    Query Nearby.
+
+    Parameters ----------
+    geomId : int
+        Geom Identifier
+
+    Returns
+    -------
+    JSON
+        Geom in JSON format
+    """
+
+    try:
+        #geom = Geom.query.filter_by(id=geomId).first()
+        #geom = Geom.query(func.ST_Area('LINESTRING(2 1,4 1)'))
+        #query = db.session.query(Geom).filter(Geom.geom_polygon.ST_Contains('POINT(0 0)')).all()
+        query = db.session.query(Geom).filter(Geom.geom_polygon.ST_Contains('POINT(42 70)')).all()
+
+        for geom in query:
+            print geom.path
+
+    except exc.SQLAlchemyError as e:
+        raise ApiException(e.message, status_code=status.HTTP_400_BAD_REQUEST)
+
+    if len(query) == 0:
+        return jsonify(API_MSG.JSON_204_NO_CONTENT), status.HTTP_204_NO_CONTENT
+    
+    #return jsonify({"data":geom.to_json()})
+    return jsonify({"data": "Hello"})
 
 @bp_geom.route('/<int:geomId>', methods=['GET'])
 def get_geom_byid(geomId):
@@ -46,7 +86,9 @@ def get_geom_byid(geomId):
     """
 
     try:
-        geom = Geom.query.filter_by(id=geomId).first()
+        db.session.query(Geom).filter(func.ST_Contains(Geom.geom_linestring, 'POINT(4 1)'))
+
+        #geom = Geom.query.filter_by(id=geomId).first()
     except exc.SQLAlchemyError as e:
         raise ApiException(e.message, status_code=status.HTTP_400_BAD_REQUEST)
 
@@ -101,6 +143,8 @@ def add_geom():
     if request.json:
         data = request.get_json()
         
+        groupId = data['properties']['groupId']
+        path = data['properties']['path']
         geomType = data['geometry']['type']
         coordinates = data['geometry']['coordinates']
         tmp_sql = ''
@@ -135,8 +179,7 @@ def add_geom():
         print '***'
         print sql_geom
         print '***'
-        groupId = data['properties']['groupId']
-        path = data['properties']['path']
+
 
     else:
         return jsonify(API_MSG.JSON_400_BAD_REQUEST), status.HTTP_400_BAD_REQUEST
