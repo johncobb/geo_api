@@ -24,14 +24,15 @@ class GeoRef(base.Base):
     data = []
     groupId = db.Column(db.Integer, nullable=False, default=0)
     path = db.Column(db.String(255), nullable=False)
-    #geom_point = db.Column(Geometry('POINT'))
-    #geom_linestring = db.Column(Geometry('LINESTRING'))
+    geom_point = db.Column(Geometry('POINT'))
+    geom_linestring = db.Column(Geometry('LINESTRING'))
     geom_polygon = db.Column(Geometry('POLYGON'))
     #geomMultiPoint = db.Column(Geometry('MULTIPOINT'))
     #geomMultiLineString = db.Column(Geometry('MULTILINESTRING'))
     #geomMultiPolygon = db.Column(Geometry('MULTIPOLYGON'))
     #geomGeometryCollection = db.Column(Geometry('GEOMETRYCOLLECTION'))
     archive = db.Column(db.Boolean, nullable=False, default=False)
+    
     
     def __init__(self, groupId, path, refType, sql_geo):
         self.groupId = groupId
@@ -45,28 +46,12 @@ class GeoRef(base.Base):
             self.geom_polygon = sql_geo
         self.archive = False
 
-    def __init__(self, groupId, path, data):
-        self.data = data
-        self.groupId = groupId
-        self.path = path
-        self.archive = False
-
-        geomType = data['geometry']['type']
-
-        sql_geo = self.build_sql(data)
-
-        if geomType == 'Point':
-            self.geom_point = sql_geo
-        elif geomType == 'LineString':
-            self.geom_linestring = sql_geo
-        elif geomType == 'Polygon':
-            self.geom_polygon = sql_geo
-
     def __repr__(self):
         return '<GeoRef%r>' % (self.name)
 
     def build_sql(self, data):
-        
+
+        print 'build_sql'
         geomType = data['geometry']['type']
         coordinates = data['geometry']['coordinates']
 
@@ -78,6 +63,7 @@ class GeoRef(base.Base):
             x = coordinates[0]
             y = coordinates[1]
             sql_georef = sql_point % (x, y)
+            print '***Point: ' + sql_georef
         elif geomType == 'LineString':
             for c in coordinates:
                 tmp_sql += (sql_tokens % (c[0], c[1])) + ','
@@ -94,9 +80,11 @@ class GeoRef(base.Base):
                 sql_georef += '(%s)' % (tmp_sql[:-2])
             #sql_polygon = sql_polygon % (sql_georef)
             #print sql_georef
+            # Some assembly required
+            sql_georef = sql_polygon % (sql_georef)
+        else:
+            print '***: WTF'
 
-        # Some assembly required
-        sql_georef = sql_polygon % (sql_georef)
 
         return sql_georef
 

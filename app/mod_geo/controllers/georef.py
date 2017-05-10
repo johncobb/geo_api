@@ -101,7 +101,6 @@ def add_georef():
     if request.json:
         data = request.get_json()
         
-        '''
         geomType = data['geometry']['type']
         coordinates = data['geometry']['coordinates']
         tmp_sql = ''
@@ -128,14 +127,14 @@ def add_georef():
             #sql_polygon = sql_polygon % (sql_georef)
             #print sql_georef
 
-        # Some assembly required
-        sql_georef = sql_polygon % (sql_georef)
+            # Some assembly required
+            sql_georef = sql_polygon % (sql_georef)
+        else:
+            print '*** WTF ***'
 
         print '***'
-        #print sql_polygon % (sql_georef)
         print sql_georef
         print '***'
-        '''
         groupId = data['properties']['groupId']
         path = data['properties']['path']
 
@@ -143,8 +142,8 @@ def add_georef():
         return jsonify(API_MSG.JSON_400_BAD_REQUEST), status.HTTP_400_BAD_REQUEST
 
     # Create the object
-    #georef = GeoRef(groupId, path, geomType, sql_georef)
-    georef = GeoRef(groupId, path, data)
+    georef = GeoRef(groupId, path, geomType, sql_georef)
+    #georef = GeoRef(groupId, path, data)
 
     try:
         db.session.add(georef)
