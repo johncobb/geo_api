@@ -1,9 +1,7 @@
-
-
 import os
 import jwt
 import json
-from functools import wraps, update_wrapper
+from functools import wraps, update_wrapper 
 from flask import Flask, _app_ctx_stack
 from flask_cors import cross_origin
 from flask import jsonify
@@ -179,6 +177,7 @@ from app.mod_organization.controllers.user import bp_user as bp_user_module
 from app.mod_organization.controllers.group import bp_group as bp_group_module
 
 from app.mod_geo.controllers.geom import bp_geom as bp_geo_geom
+from app.mod_geo.controllers.geometryhandler import bp_geometryhandler as bp_geometryhandler
 
 app.register_blueprint(bp_app_module)
 app.register_blueprint(bp_applet_module)
@@ -186,4 +185,5 @@ app.register_blueprint(bp_organization_module)
 app.register_blueprint(bp_user_module)
 app.register_blueprint(bp_group_module)
 app.register_blueprint(bp_geo_geom)
+app.register_blueprint(bp_geometryhandler)
 db.create_all()
