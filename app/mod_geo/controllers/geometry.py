@@ -12,13 +12,13 @@ from app import Payload as Payload
 from geoalchemy2 import Geometry
 from geoalchemy2.functions import GenericFunction
 
-from app.mod_geo.models.geometrypoint import GeometryPoint
+from app.mod_geo.models.point import GeometryPoint
 from app import ApiExceptionHandler as ApiException
 from sqlalchemy import exc
 from sqlalchemy import func
 
 
-bp_geometryhandler = Blueprint('geometry', __name__, url_prefix='/geometry')
+bp_geometry = Blueprint('geometry', __name__, url_prefix='/geometry')
 
 sql_point = 'POINT ({0} {1})'
 
@@ -28,7 +28,7 @@ sql_point = 'POINT ({0} {1})'
 # PATCH partially update record
 # DELETE delete a record
 
-@bp_geometryhandler.route('/', methods=['POST'])
+@bp_geometry.route('/', methods=['POST'])
 def add_point():
 
     """
@@ -83,7 +83,7 @@ def add_point():
     return jsonify(data)
 
 
-@bp_geometryhandler.route('/nearbybrief', methods=['GET'])
+@bp_geometry.route('/nearbybrief', methods=['GET'])
 def nearbybrief():
 
     """
@@ -143,7 +143,7 @@ def nearbybrief():
     return jsonify(geojson_points)
 
 
-@bp_geometryhandler.route('/nearby', methods=['GET'])
+@bp_geometry.route('/nearby', methods=['GET'])
 def nearby():
 
     """

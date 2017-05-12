@@ -6,6 +6,9 @@ from geoalchemy2 import Geometry
 
 Base = declarative_base()
 
+"""
+Spatial Reference System Identifier
+"""
 SRID = 4326 
 
 
