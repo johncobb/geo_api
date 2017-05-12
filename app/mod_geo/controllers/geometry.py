@@ -20,7 +20,15 @@ from sqlalchemy import func
 
 bp_geometry = Blueprint('geometry', __name__, url_prefix='/geometry')
 
-sql_point = 'POINT ({0} {1})'
+SRID = 4326 
+
+
+"""
+GeoSpatialNotes:
+
+ST_Distance({0} {1})
+SRID={0}; POINT ({1} {2})
+"""
 
 # GET retrieve a record
 # PUT update a record
@@ -29,20 +37,20 @@ sql_point = 'POINT ({0} {1})'
 # DELETE delete a record
 
 @bp_geometry.route('/', methods=['POST'])
-def add_point():
+def add():
 
     """
-    Add Geom.
+    Add GeometryPoint.
 
     Parameters
     ----------
     POST : JSON
-        JSON object (Geom)
+        GeoJSON object (GeometryPoint)
 
     Returns
     -------
     JSON
-        Geom in JSON format
+        GeoPoint in GeoJSON format
     """
 
     data = None
@@ -86,84 +94,81 @@ def add_point():
     return jsonify(data)
 
 
-@bp_geometry.route('/nearbybrief', methods=['GET'])
-def nearbybrief():
+@bp_geometry.route('/', methods=['PUT'])
+def update():
 
     """
-    Query Nearby.
+    Update GeometryPoint.
 
     Parameters
-    -----------
-    geomId : int
-        Geom Identifier
+    ----------
+    PUT : JSON
+        GeoJSON object (GeometryPoint)
 
     Returns
     -------
     JSON
-        Geom in JSON format
+        GeoPoint in GeoJSON format
     """
 
-    try:
-        features = []
-        """ Query All Columns """
-        points = db.session.query(GeometryPoint).all()
+    data = None
+    sql_geom = ''
 
-        """ Query Geometry Column Only """
-        #points = db.session.query(GeometryPoint.geometry).all()
-
-        """ Query Geometry Column and return GeoJSON """
-        points = db.session.query(GeometryPoint.geometry.ST_AsGeoJSON()).all()
+    # Validate the incoming JSON
+    if request.json:
+        data = request.get_json()
         
-        """ Query Selected Columns and return GeoJSON """
-        #points = db.session.query(GeometryPoint.path, GeometryPoint.groupId, GeometryPoint.geometry.ST_AsGeoJSON()).all()
-        for p in points:
+        pointId = data['properties']['id']
+        typeId = data['properties']['typeId']
+        path = data['properties']['path']
+        label = data['properties']['label']
+        meta = data['properties']['meta']
+        geometry_type = data['geometry']['type']
+        coordinates = data['geometry']['coordinates']
 
-            point_feature = {
-                'type': 'Feature',
-                'geometry': json.loads(p[0])
-            }
+        tmp_sql = ''
+        sql_tokens = '%s %s'
 
-            features.append(point_feature)
+        if geometry_type == 'Point':
+            x = coordinates[0]
+            y = coordinates[1]
+            
+        else:
+            raise ApiException('Expecting type: Point', status_code=status.HTTP_400_BAD_REQUEST)
 
-        geojson_points = {
-            'type': 'FeatureCollection',
-            'crs': {
-                'type': 'name',
-                'properties': {
-                    'name': 'EPSG:4326'
-                }
-            },
-            'features': features
-        }
+    else:
+        return jsonify(API_MSG.JSON_400_BAD_REQUEST), status.HTTP_400_BAD_REQUEST
 
+    try:
 
+        gp = GeometryPoint.query.filter_by(id=pointId).first()
+
+        gp.typeId = typeId
+        gp.path = path
+        gp.label = label
+        gp.meta = meta
+        gp.geometry = "SRID={0}; POINT ({1} {2})".format(SRID, x, y)
+        
+        db.session.commit()
     except exc.SQLAlchemyError as e:
+        db.session.rollback()
         raise ApiException(e.message, status_code=status.HTTP_400_BAD_REQUEST)
 
-    if len(points) == 0:
-        return jsonify(API_MSG.JSON_204_NO_CONTENT), status.HTTP_204_NO_CONTENT
-    
-    return jsonify(geojson_points)
-
-
+    return jsonify(data)
 @bp_geometry.route('/nearby', methods=['GET'])
 def nearby():
 
     """
     Query Nearby.
 
-    Parameters
-    -----------
-    geomId : int
-        Geom Identifier
-
     Returns
     -------
     JSON
-        Geom in JSON format
+        Points in GeoJSON format
     """
 
     try:
+
         features = []
         """ Query All Columns """
         #points = db.session.query(GeometryPoint).all()
@@ -217,3 +222,67 @@ def nearby():
     return jsonify(geojson_points)
 
 
+@bp_geometry.route('/dist', methods=['GET'])
+def dist():
+
+    """
+    Query Distance.
+
+    Returns
+    -------
+    JSON
+        Points in GeoJSON format
+    """
+
+    try:
+
+        features = []
+        
+        sql_point = 'SRID={0}; POINT ({1} {2})'
+
+        x = 37.000
+        y = -87.00
+        sql_point = sql_point.format(SRID, x, y)
+        
+        points = db.session.query(GeometryPoint.geometry.ST_AsGeoJSON(), func.ST_Distance(sql_point, GeometryPoint.geometry), GeometryPoint.meta, GeometryPoint.label, GeometryPoint.path, GeometryPoint.typeId, GeometryPoint.id, GeometryPoint.archive).all()
+
+
+        for p in points:
+
+            properties = {
+                'id' : p.id,
+                'typeId': p.typeId,
+                'path': p.path,
+                'label': p.label,
+                'meta': p.meta,
+                'archive': p.archive
+            }
+
+            point_feature = {
+                'type': 'Feature',
+                'properties': properties,
+                'geometry': json.loads(p[0]), # Must access as string index 0
+                'dist': p[1] # Must access as string index 0
+            }
+
+            features.append(point_feature)
+
+        geojson_points = {
+            'type': 'FeatureCollection',
+            'crs': {
+                'type': 'name',
+                'properties': {
+                    'name': 'EPSG:4326'
+                }
+            },
+            'features': features
+        }
+
+
+    except exc.SQLAlchemyError as e:
+        raise ApiException(e.message, status_code=status.HTTP_400_BAD_REQUEST)
+
+    if len(points) == 0:
+        return jsonify(API_MSG.JSON_204_NO_CONTENT), status.HTTP_204_NO_CONTENT
+    
+    return jsonify(geojson_points)
