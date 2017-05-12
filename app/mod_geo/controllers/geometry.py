@@ -52,11 +52,13 @@ def add_point():
     if request.json:
         data = request.get_json()
         
-        groupId = data['properties']['groupId']
-        name = data['properties']['name']
+        typeId = data['properties']['typeId']
         path = data['properties']['path']
+        label = data['properties']['label']
+        meta = data['properties']['meta']
         geometry_type = data['geometry']['type']
         coordinates = data['geometry']['coordinates']
+
         tmp_sql = ''
         sql_tokens = '%s %s'
 
@@ -71,7 +73,8 @@ def add_point():
         return jsonify(API_MSG.JSON_400_BAD_REQUEST), status.HTTP_400_BAD_REQUEST
 
     # Create the object
-    point = GeometryPoint(x, y, groupId, name, path)
+    #point = GeometryPoint(x, y, groupId, name, path)
+    point = GeometryPoint(x, y, typeId, path, label, meta)
 
     try:
         db.session.add(point)
@@ -172,14 +175,16 @@ def nearby():
         #points = db.session.query(GeometryPoint.geometry.ST_AsGeoJSON()).all()
         
         """ Query Selected Columns and return GeoJSON """
-        points = db.session.query(GeometryPoint.geometry.ST_AsGeoJSON(), GeometryPoint.name, GeometryPoint.path, GeometryPoint.groupId, GeometryPoint.id, GeometryPoint.archive).all()
+        points = db.session.query(GeometryPoint.geometry.ST_AsGeoJSON(), GeometryPoint.meta, GeometryPoint.label, GeometryPoint.path, GeometryPoint.typeId, GeometryPoint.id, GeometryPoint.archive).all()
+
         for p in points:
 
             properties = {
                 'id' : p.id,
-                'name': p.name,
-                'group': p.groupId,
+                'typeId': p.typeId,
                 'path': p.path,
+                'label': p.label,
+                'meta': p.meta,
                 'archive': p.archive
             }
 
